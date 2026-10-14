@@ -1,0 +1,115 @@
+/* ============================================================
+   PUNTO CERCA — App.css
+   Secciones:
+     1. Base y variables
+     2. Barra superior
+     3. Panel lateral (búsqueda, categorías, lista, ruta)
+     4. Mapa (contenedor, etiquetas, errores)
+     5. Marcadores del mapa
+     6. Móvil
+   ============================================================ */
+
+/* ---------- 1. Base y variables ---------- */
+:root {
+  --verde: #3d816c;
+  --verde-claro: #e4f0eb;
+  --naranja: #df7553;
+  --tinta: #1f2a27;
+  --tinta-suave: #6b7a75;
+  --fondo: #f6f4ef;
+  --borde: #e2ded4;
+  --blanco: #fff;
+}
+
+/* El mapa necesita que toda la cadena de contenedores tenga altura. */
+html, body, #root { height: 100%; margin: 0; }
+body { font-family: system-ui, -apple-system, 'Segoe UI', sans-serif; color: var(--tinta); background: var(--fondo); }
+* { box-sizing: border-box; }
+button { font: inherit; cursor: pointer; }
+
+.app-shell { display: flex; flex-direction: column; height: 100%; }
+
+/* ---------- 2. Barra superior ---------- */
+.topbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 20px; background: var(--blanco); border-bottom: 1px solid var(--borde); }
+.brand { display: flex; align-items: center; gap: 8px; color: var(--tinta); text-decoration: none; font-size: 1.1rem; }
+.brand-mark { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 10px; background: var(--verde); color: var(--blanco); }
+.topbar-note { display: flex; align-items: center; gap: 8px; color: var(--tinta-suave); font-size: 0.9rem; }
+.live-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--verde); }
+.location-button { padding: 8px 14px; border: 1px solid var(--verde); border-radius: 999px; background: var(--verde-claro); color: var(--verde); font-weight: 600; }
+.location-button:hover { background: var(--verde); color: var(--blanco); }
+
+/* ---------- 3. Panel lateral ---------- */
+.workspace { display: grid; grid-template-columns: 380px 1fr; flex: 1; min-height: 0; }
+.sidebar { display: flex; flex-direction: column; gap: 14px; padding: 20px; overflow-y: auto; background: var(--fondo); border-right: 1px solid var(--borde); }
+.eyebrow { margin: 0; font-size: 0.7rem; letter-spacing: 0.12em; color: var(--verde); font-weight: 700; }
+.sidebar-heading h1 { margin: 4px 0; font-size: 1.9rem; line-height: 1.1; }
+.intro { margin: 0; color: var(--tinta-suave); }
+
+/* Buscador */
+.search-box { display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: var(--blanco); border: 1px solid var(--borde); border-radius: 12px; }
+.search-box input { flex: 1; border: 0; outline: 0; font: inherit; background: transparent; }
+.search-box kbd { padding: 1px 7px; border: 1px solid var(--borde); border-radius: 6px; color: var(--tinta-suave); font-size: 0.75rem; }
+
+/* Categorías */
+.category-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.category-chip { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border: 1px solid var(--borde); border-radius: 999px; background: var(--blanco); }
+.category-chip.active { background: var(--verde); border-color: var(--verde); color: var(--blanco); }
+
+/* Lista de lugares */
+.places-header { display: flex; align-items: center; justify-content: space-between; }
+.places-header h2 { margin: 0; font-size: 1rem; }
+.place-count { padding: 2px 10px; border-radius: 999px; background: var(--verde-claro); color: var(--verde); font-weight: 700; font-size: 0.85rem; }
+.places-list { display: flex; flex-direction: column; gap: 8px; }
+.empty-state { margin: 0; padding: 14px; border: 1px dashed var(--borde); border-radius: 12px; color: var(--tinta-suave); font-size: 0.9rem; }
+.place-row { display: flex; align-items: center; gap: 12px; width: 100%; padding: 10px 12px; text-align: left; background: var(--blanco); border: 1px solid var(--borde); border-radius: 12px; }
+.place-row:hover { border-color: var(--verde); }
+.place-row.selected { border-color: var(--naranja); background: #fff4ef; }
+.place-icon { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 10px; background: var(--verde-claro); }
+.place-icon.restaurante { background: #fde8df; }
+.place-icon.iglesia { background: #ece8f7; }
+.place-icon.ferreteria { background: #e8eef5; }
+.place-icon.parque { background: #e1f1e0; }
+.place-copy { display: flex; flex: 1; flex-direction: column; min-width: 0; }
+.place-copy strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.place-copy small { color: var(--tinta-suave); }
+.place-arrow { color: var(--tinta-suave); }
+
+/* Tarjeta "Cómo llegar" */
+.route-card { padding: 14px; background: var(--blanco); border: 1px solid var(--naranja); border-radius: 14px; }
+.route-card p { margin: 8px 0 0; }
+.route-card-top { display: flex; align-items: center; gap: 10px; }
+.route-card-top small { display: block; color: var(--tinta-suave); }
+.route-symbol { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 10px; background: var(--naranja); color: var(--blanco); }
+.sidebar-footer { margin-top: auto; padding-top: 8px; color: var(--tinta-suave); font-size: 0.75rem; }
+
+/* ---------- 4. Mapa ---------- */
+.map-panel { position: relative; min-height: 0; }
+/* OBLIGATORIO: sin altura explícita Leaflet no se ve (0px). */
+.map-view { width: 100%; height: 100%; z-index: 0; }
+
+.map-label { position: absolute; top: 14px; left: 14px; z-index: 500; display: flex; align-items: center; gap: 10px; padding: 8px 14px; background: var(--blanco); border-radius: 12px; box-shadow: 0 2px 10px rgb(0 0 0 / 15%); }
+.map-label small { display: block; color: var(--tinta-suave); }
+.map-label-pin { color: var(--verde); font-size: 1.2rem; }
+
+.map-legend { position: absolute; bottom: 14px; left: 14px; z-index: 500; display: flex; align-items: center; gap: 8px; padding: 6px 12px; background: var(--blanco); border-radius: 999px; font-size: 0.8rem; box-shadow: 0 2px 10px rgb(0 0 0 / 15%); }
+.legend-user, .legend-route { display: inline-block; }
+.legend-user { width: 10px; height: 10px; border-radius: 50%; background: var(--verde); }
+.legend-route { width: 18px; height: 4px; border-radius: 2px; background: var(--naranja); }
+
+.map-error { position: absolute; top: 14px; right: 14px; z-index: 500; display: flex; align-items: center; gap: 10px; max-width: 320px; padding: 10px 14px; background: #fdecea; color: #8a2b1f; border-radius: 12px; box-shadow: 0 2px 10px rgb(0 0 0 / 15%); }
+.map-error button { border: 0; background: transparent; font-size: 1.2rem; color: inherit; }
+
+.map-location-button { position: absolute; right: 14px; bottom: 30px; z-index: 500; width: 44px; height: 44px; border: 0; border-radius: 50%; background: var(--blanco); color: var(--verde); font-size: 1.3rem; box-shadow: 0 2px 10px rgb(0 0 0 / 25%); }
+
+/* ---------- 5. Marcadores (L.divIcon) ---------- */
+/* Lugar normal: puntito verde con borde blanco. */
+.poi-marker span { display: block; width: 20px; height: 20px; border: 3px solid var(--blanco); border-radius: 50%; background: var(--verde); box-shadow: 0 1px 6px rgb(0 0 0 / 40%); }
+/* Lugar seleccionado: gota naranja con estrella. */
+.destination-marker span { display: grid; place-items: center; width: 30px; height: 30px; border: 3px solid var(--blanco); border-radius: 50% 50% 50% 0; transform: rotate(-45deg); background: var(--naranja); color: var(--blanco); box-shadow: 0 2px 8px rgb(0 0 0 / 40%); }
+
+/* ---------- 6. Móvil ---------- */
+@media (max-width: 800px) {
+  .topbar-note { display: none; }
+  .workspace { grid-template-columns: 1fr; grid-template-rows: 45% 55%; }
+  .sidebar { border-right: 0; border-bottom: 1px solid var(--borde); }
+}

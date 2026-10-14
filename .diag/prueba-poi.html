@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <title>Prueba de POI en navegador real</title>
+</head>
+<body>
+  <h1>¿Puede el navegador llegar a Overpass?</h1>
+  <pre id="salida">ejecutando…</pre>
+
+  <script type="module">
+    // Se importa el archivo REAL de la app, sin modificar: front/src/mapa.js
+    import { construirConsultaOverpass, convertirElementoEnLugar } from '/mapa.js'
+
+    const salida = document.getElementById('salida')
+    const lineas = []
+    const anotar = (t) => { lineas.push(t); salida.textContent = lineas.join('\n') }
+
+    anotar(`navegador: ${navigator.userAgent}`)
+    anotar(`origen: ${location.origin}`)
+
+    const consulta = construirConsultaOverpass([40.4168, -3.7038])
+    anotar(`consulta generada por la app: ${consulta.split('\n').length} líneas`)
+
+    // Una sola petición por servidor, con 15 s de límite, para ver qué contesta.
+    for (const servidor of [
+      'https://overpass-api.de/api/interpreter',
+      'https://overpass.private.coffee/api/interpreter',
+    ]) {
+      const t0 = performance.now()
+      try {
+        const respuesta = await fetch(servidor, {
+          method: 'POST',
+          body: new URLSearchParams({ data: consulta }),
+          signal: AbortSignal.timeout(15000),
+        })
+        const texto = await respuesta.text()
+        const ms = Math.round(performance.now() - t0)
+        let detalle = texto.slice(0, 80).replace(/\s+/g, ' ')
+        if (texto.trimStart().startsWith('{')) {
+          const datos = JSON.parse(texto)
+          const lugares = (datos.elements ?? []).map(convertirElementoEnLugar).filter(Boolean)
+          detalle = `elements=${(datos.elements ?? []).length} · convertidos=${lugares.length} · remark=${datos.remark ?? '-'}`
+        }
+        anotar(`[${servidor}] HTTP ${respuesta.status} · ${ms} ms · ${detalle}`)
+      } catch (fallo) {
+        anotar(`[${servidor}] EXCEPCIÓN tras ${Math.round(performance.now() - t0)} ms · ${fallo.name}: ${fallo.message}`)
+      }
+    }
+
+    await fetch('/resultado', { method: 'POST', body: lineas.join('\n') }).catch(() => {})
+  </script>
+</body>
+</html>
